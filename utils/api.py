@@ -77,6 +77,7 @@ async def topAiring():
                             image_url = anime['coverImage']['large'] if anime.get('coverImage') else "N/A"
 
                         result.append({
+                            "id": id,
                             "title": title,
                             "status": status,
                             "rating": rating,
@@ -146,6 +147,7 @@ async def getAnime(anime_id):
             anime_data = data.get('data', {}).get('Media')
             if anime_data:
                 details = {
+                    'id': anime_id,
                     'title': anime_data['title']['english'],
                     'jap': anime_data['title']['native'],
                     'status': anime_data['status'],

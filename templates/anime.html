@@ -101,7 +101,7 @@
             <ul>
                 {% if anime.episodes is not none %}
                 {% for i in range(anime.episodes) %}
-                    <a href="">{{ loop.index }}</a>
+                    <a href='/watch/{{ "" if anime.title is none else anime.title.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ loop.index }}'>{{ loop.index }}</a>
                 {% endfor %}
                 {% endif %}
             </ul>

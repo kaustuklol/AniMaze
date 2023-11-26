@@ -83,7 +83,7 @@
                     <div class="icons">
                         <div class="tv"><i class="fa fa-play"></i>&nbsp;{{ anime.type }}</div>
                         <div class="status"><i class="fa fa-calendar"></i>&nbsp;{{ anime.status }}</div>
-                        <div class="genres">{{ ', '.join(anime.genres) }}</div>
+                        <div class="genres">{{ ', '.join(anime.genres[:2]) }}</div>
                     </div>
                     {% if anime.description is not none %}
                     <div class="synopsis" style="width: 70%;">

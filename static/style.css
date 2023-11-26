@@ -101,7 +101,7 @@ nav .nav-bar .logo a {
 }
 
 nav .nav-bar .logo img{
-    width: 160px;
+    width: 160px !important;
 }
 
 .menu .logo-toggle {
@@ -666,7 +666,20 @@ header {
     display: block;
 }
 @media (max-width: 790px) {
+    .trending h1{
+        font-size: 28px;
+    }
+
     .card:hover .info-box{
         display: none;
+    }
+
+    .card img{
+        height: 220px;
+    }
+
+    .cards{
+        margin: 18px 10px;
+        /* justify-content: initial; */
     }
 }
