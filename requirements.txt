@@ -3,3 +3,4 @@ requests
 httpx
 loguru
 uvicorn
+jinja2
