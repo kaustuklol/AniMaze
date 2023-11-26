@@ -1,0 +1,173 @@
+.banner{
+    height: 300px;
+    background-size: cover;
+    background-position: 50% 35%;
+    background-repeat: no-repeat;
+    margin-top: 70px;
+    position: relative;
+    /* Add the blur effect */
+    filter: blur(8px);
+    /* -webkit-filter: blur(8px); */
+    transform: scaleY(1.5);
+} 
+
+.box{
+    position: absolute;
+    width: 100%;
+    top: 30%;
+    color: var(--heading-color);
+    
+}
+
+.potrait{
+    margin: 0 6%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.potrait .image{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.potrait .image img{
+    height: 400px;
+    min-width: 300px;
+    border-radius: 5px;
+}
+
+.potrait .image .watch{
+    /* width: 110px; */
+    background: var(--watch-btn);
+    text-align: center;
+    padding: 10px 50px;
+    border-radius: 25px;
+    border: 5px solid var(--watch-border);
+    text-decoration: none;
+    color: var(--heading-color);
+    position: relative;
+    top: 20px;
+}
+
+.potrait .content{
+    margin-left: 50px;
+    margin-top: 120px;
+}
+
+.potrait .content h2{
+    font-size: 50px;
+    font-weight: 600;
+    color: var(--x);
+}
+
+.japanese{
+    color: var(--x);
+}
+
+.potrait .content .sypnosis{
+    color: grey;
+    font-size: 14px;
+    line-height: 1.4rem;
+    max-height: 90px;
+    max-width: 800px;
+    overflow-y: auto;
+    margin: 12px 0;
+}
+
+.genres{
+    display: flex;
+}
+
+.genres ul{
+    display: flex;
+}
+
+.genres ul li{
+    border: 3px solid #e0115f;
+    margin-left: 5px;
+    padding: 0 8px;
+    border-radius: 25px;
+}
+
+.potrait .content div b{
+    font-size: 18px;
+}
+
+.box .episodes{
+    margin: 4% 6%;
+}
+
+.box .episodes h1{
+    font-size: 28px;
+    margin: 5px 0;
+}
+
+.box .episodes ul{
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    flex-wrap: wrap;
+    width: 100%;
+    /* background: rgb(32, 33, 37); */
+}
+
+.box .episodes ul a{
+    background: #e0115f;
+    color: var(--button-text);
+    padding: 4px 15px;
+    margin: 5px;
+    border-radius: 4px;
+
+}
+
+
+
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+/* Track */
+.potrait .content .sypnosis::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 50px rgba(0,0,0,0.3); 
+    /* -webkit-border-radius: 10px; */
+    /* border-radius: 10px; */
+}
+
+/* Handle */
+.potrait .content .sypnosis::-webkit-scrollbar-thumb {
+    /* -webkit-border-radius: 10px; */
+    /* border-radius: 10px; */
+    background: var(--nav-color); 
+    -webkit-box-shadow: inset 0 0 20px #807e76; 
+}
+
+@media (max-width: 790px) {
+    .banner{
+        height: 280px;
+    }
+
+    .potrait .image img{
+        height: 370px;
+        min-width: auto;
+    }
+
+    .potrait .content{
+        margin-left: 0;
+        margin-top: 25px;
+    }
+
+    .potrait .content h2{
+        font-size: 42px;
+    }
+
+    .potrait .content .genres ul li{
+        padding: 0 3px;
+    }
+
+
+}
+
+.footer{
+    background: var(--nav-color);
+}

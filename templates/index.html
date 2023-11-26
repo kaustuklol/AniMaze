@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- ===== CSS ===== -->
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/anime.css">
+
+    <!-- ===== Boxicons CSS ===== -->
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+
+    <script src="https://kit.fontawesome.com/45cb819601.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"> -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+    <title>AnimeWeb</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="nav-bar">
+                <i class='bx bx-menu sidebarOpen'></i>
+                <span class="logo navLogo"><a href="#"><img src="/static/assets/logo-pink.png" alt="AniMaze"></a></span>
+
+                <div class="menu">
+                    <div class="logo-toggle">
+                        <span class="logo"><a href="#">AnimeWeb</a></span>
+                        <i class='bx bx-x siderbarClose'></i>
+                    </div>
+
+                    <ul class="nav-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="#trending">Trending</a></li>
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="darkLight-searchBox">
+                    <div class="dark-light">
+                        <i class='bx bx-moon moon'></i>
+                        <i class='bx bx-sun sun'></i>
+                    </div>
+
+                    <div class="searchBox">
+                        <div class="searchToggle">
+                            <i class='bx bx-x cancel'></i>
+                            <i class='bx bx-search search'></i>
+                        </div>
+
+                        <div class="search-field">
+                            <input type="text" placeholder="Search...">
+                            <i class='bx bx-search'></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- Slider (Links Left) -->
+    <!-- Slider (Links Left) -->
+    <!-- Slider (Links Left) -->
+    <div class="swiper slider">
+        <div class="swiper-wrapper">
+            {% for anime in trending %}
+            <div class="swiper-slide">
+                <img src="{{ anime.cover }}" loading="lazy">
+                <div class="content-slide">
+                    <div class="spotlight">#{{ loop.index }}</div>
+                    <div class="title">{{ anime.title.english }}</div>
+                    <div class="icons">
+                        <div class="tv"><i class="fa fa-play"></i>&nbsp;{{ anime.type }}</div>
+                        <div class="status"><i class="fa fa-calendar"></i>&nbsp;{{ anime.status }}</div>
+                        <div class="genres">{{ ', '.join(anime.genres) }}</div>
+                    </div>
+                    {% if anime.description is not none %}
+                    <div class="synopsis" style="width: 70%;">
+                        {{ anime.description|striptags|truncate(250, True, '...')|safe }}
+                    </div>
+                    {% endif %}
+                    <div class="btn">
+                        <a href='/watch/{{ "" if anime.title.english is none else anime.title.english.replace(":", "").replace(" ", "-") }}-{{ anime.id }}$1' class='watch'>Watch Now</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-prev" id="prev"></div>
+        <div class="swiper-button-next" id="next"></div>
+    </div>
+
+
+
+    <!-- Trending Cards -->
+    <div class="trending">
+        <h1>Trending This Week</h1>
+        <div class="cards">
+            {% for anime in top %}
+            <div class="card">
+                <div class="img">
+                    <img loading="lazy" src="{{ anime.image }}" alt="{{ anime.title }}">
+                    <i class="fa fa-play"></i>
+                </div>
+                <div class="name">{{ anime['title'] }}</div>
+                <div class="info-box" style="z-index: 1;">
+                    <div class="info-title">{{ anime['title'] }}</div>
+                    {% if anime['rating'] is not none %}
+                    <div class="rating">
+                        <i class="fa fa-star"></i>
+                        <div class="text-rating">{{ anime['rating'] }}</div>
+                        <div class="line-rating">
+                            <div class="line-red" style="width: {{ anime['rating'] }}%;"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <ul class="info-genres">
+                        {% for genre in anime['genres'][:3] %}
+                        <li>{{ genre }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% if anime['synopsis'] is not none %}
+                    <div class="info-desc">
+                        {{ anime['synopsis']|striptags|truncate(100, True, '...')|safe }} :)
+                    </div>
+                    {% endif %}
+                    <div class="info-btns">
+                        <a href='/watch/{{ "" if anime["title"] is none else anime["title"].replace(":", "").replace(" ", "-") }}-{{ anime["id"] }}$1' class="info-watch">Watch</a>
+                        <a href='/anime/{{ "" if anime["title"] is none else anime["title"].replace(":", "").replace(" ", "-") }}-{{ anime["id"] }}' class="info-btn">Info</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer>
+        <div class="bg-opacity-75 footer">
+            <div class="container px-5 py-1 mx-auto flex items-center sm:flex-row flex-col"><a
+                    class="flex title-font font-medium items-center md:justify-start justify-center text-white"><img
+                        src="../static/assets/logo.png"
+                        class="text-white" style="width: 80px;">
+                    </img><span class="ml-3 text-xl">AniMaze</span></a>
+                <p class="text-sm text-gray-400 sm:ml-6 sm:mt-0 mt-4">© 2023 AniMaze —<a
+                        href="https://twitter.com/knyttneve" class="text-gray-400 ml-1" target="_blank"
+                        rel="noopener noreferrer">@AniMaze</a></p><span
+                    class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start"><a
+                        class="text-gray-400"><svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                        </svg></a><a class="ml-3 text-gray-400"><svg fill="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                            <path
+                                d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z">
+                            </path>
+                        </svg></a><a class="ml-3 text-gray-400"><svg fill="none" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5"
+                            viewBox="0 0 24 24">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
+                        </svg></a><a class="ml-3 text-gray-400"><svg fill="currentColor" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="0" class="w-5 h-5"
+                            viewBox="0 0 24 24">
+                            <path stroke="none"
+                                d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z">
+                            </path>
+                            <circle cx="4" cy="4" r="2" stroke="none"></circle>
+                        </svg></a></span>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="/static/script.js"></script>
+</body>
+
+
+</html>

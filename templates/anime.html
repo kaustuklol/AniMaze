@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch: {{ anime.title }}</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/anime.css">
+
+    <!-- ===== Boxicons CSS ===== -->
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+
+    <script src="https://kit.fontawesome.com/45cb819601.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="nav-bar">
+                <i class='bx bx-menu sidebarOpen'></i>
+                <span class="logo navLogo"><a href="/"><img src="/static/assets/logo-light.png" alt="AniMaze"></a></span>
+
+                <div class="menu">
+                    <div class="logo-toggle">
+                        <span class="logo"><a href="#">AnimeWeb</a></span>
+                        <i class='bx bx-x siderbarClose'></i>
+                    </div>
+
+                    <ul class="nav-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="#trending">Trending</a></li>
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="darkLight-searchBox">
+                    <div class="dark-light">
+                        <i class='bx bx-moon moon'></i>
+                        <i class='bx bx-sun sun'></i>
+                    </div>
+
+                    <div class="searchBox">
+                        <div class="searchToggle">
+                            <i class='bx bx-x cancel'></i>
+                            <i class='bx bx-search search'></i>
+                        </div>
+
+                        <div class="search-field">
+                            <input type="text" placeholder="Search...">
+                            <i class='bx bx-search'></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="banner" style="background: url('{{ anime.banner }}');">
+        </div>
+
+    </header>
+    <div class="box">
+        <div class="potrait">
+            <div class="image">
+                <img src="{{ anime.poster }}" alt="">
+                <a href="" class="watch"><i class="fa fa-play"></i> Watch Now</a>
+            </div>
+            <div class="content">
+                <h2>{{ anime.title|striptags|truncate(37, True, '...')|safe }}</h2>
+                <div class="japanese"><b>Japanese:</b> {{ anime.jap }}</div>
+                <div class="status">
+                    <b>Status: </b>{{ anime.status }}
+                </div>
+                <div class="duration"><b>Duration: </b>{{ anime.duration }}m</div>
+                <div class="studio"><b>Studio: </b>{{ anime.studio }}</div>
+                <div class="score"><b>Score: </b>{{ anime.score }}</div>
+                <div class="genres"><b>Genres: &nbsp;</b>
+                    <ul>
+                        {% for genre in anime.genres %}
+                            {% if loop.index < 4 %}
+                            <li>{{ genre }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="sypnosis">
+                    <b>Synopsis:</b><br>
+                    {{ anime.synopsis|safe }}
+                </div>
+            </div>
+
+        </div>
+        <div class="episodes">
+            <h1>Episodes</h1>
+            <ul>
+                {% if anime.episodes is not none %}
+                {% for i in range(anime.episodes) %}
+                    <a href="">{{ loop.index }}</a>
+                {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        <footer>
+            <div class="bg-opacity-75 footer">
+                <div class="container px-5 py-1 mx-auto flex items-center sm:flex-row flex-col"><a
+                        class="flex title-font font-medium items-center md:justify-start justify-center text-white"><img
+                            src="../static/assets/logo.png"
+                            class="text-white" style="width: 80px;">
+                        </img><span class="ml-3 text-xl">AniMaze</span></a>
+                    <p class="text-sm text-gray-400 sm:ml-6 sm:mt-0 mt-4">© 2023 AniMaze —<a
+                            href="https://twitter.com/knyttneve" class="text-gray-400 ml-1" target="_blank"
+                            rel="noopener noreferrer">@AniMaze</a></p><span
+                        class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start"><a
+                            class="text-gray-400"><svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                            </svg></a><a class="ml-3 text-gray-400"><svg fill="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                                <path
+                                    d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z">
+                                </path>
+                            </svg></a><a class="ml-3 text-gray-400"><svg fill="none" stroke="currentColor"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5"
+                                viewBox="0 0 24 24">
+                                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
+                            </svg></a><a class="ml-3 text-gray-400"><svg fill="currentColor" stroke="currentColor"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="0" class="w-5 h-5"
+                                viewBox="0 0 24 24">
+                                <path stroke="none"
+                                    d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z">
+                                </path>
+                                <circle cx="4" cy="4" r="2" stroke="none"></circle>
+                            </svg></a></span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
