@@ -25,17 +25,19 @@
         <nav>
             <div class="nav-bar">
                 <i class='bx bx-menu sidebarOpen'></i>
-                <span class="logo navLogo"><a href="/"><img src="/static/assets/logo-light.png" alt="AniMaze"></a></span>
+                <span class="logo navLogo"><a href="/"><img src="/static/assets/logo-light.png" alt="AniMaze"
+                            id="logo"></a></span>
 
                 <div class="menu">
                     <div class="logo-toggle">
-                        <span class="logo"><a href="#">AnimeWeb</a></span>
+                        <span class="logo"><a href="/"><img src="/static/assets/logo-light.png" alt="AniMaze"
+                                    id="logo"></a></span>
                         <i class='bx bx-x siderbarClose'></i>
                     </div>
 
                     <ul class="nav-links">
                         <li><a href="/">Home</a></li>
-                        <li><a href="#trending">Trending</a></li>
+                        <li><a href="/#trending">Trending</a></li>
                         <li><a href="/about">About</a></li>
                     </ul>
                 </div>
@@ -83,10 +85,9 @@
                 <div class="genres"><b>Genres: &nbsp;</b>
                     <ul>
                         {% for genre in anime.genres %}
-                            {% if loop.index < 4 %}
-                            <li>{{ genre }}</li>
+                        {% if loop.index < 4 %} <li>{{ genre }}</li>
                             {% endif %}
-                        {% endfor %}
+                            {% endfor %}
                     </ul>
                 </div>
                 <div class="sypnosis">
@@ -101,7 +102,9 @@
             <ul>
                 {% if anime.episodes is not none %}
                 {% for i in range(anime.episodes) %}
-                    <a href='/watch/{{ "" if anime.title is none else anime.title.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ loop.index }}'>{{ loop.index }}</a>
+                <a
+                    href='/watch/{{ "" if anime.title is none else anime.title.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ loop.index }}'>{{
+                    loop.index }}</a>
                 {% endfor %}
                 {% endif %}
             </ul>
@@ -110,15 +113,14 @@
             <div class="bg-opacity-75 footer">
                 <div class="container px-5 py-1 mx-auto flex items-center sm:flex-row flex-col"><a
                         class="flex title-font font-medium items-center md:justify-start justify-center text-white"><img
-                            src="../static/assets/logo.png"
-                            class="text-white" style="width: 80px;">
+                            src="../static/assets/logo.png" class="text-white" style="width: 80px;">
                         </img><span class="ml-3 text-xl">AniMaze</span></a>
                     <p class="text-sm text-gray-400 sm:ml-6 sm:mt-0 mt-4">© 2023 AniMaze —<a
                             href="https://twitter.com/AniMaze" class="text-gray-400 ml-1" target="_blank"
                             rel="noopener noreferrer">@AniMaze</a></p><span
                         class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start"><a
-                            class="text-gray-400"><svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                            class="text-gray-400"><svg fill="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
                                 <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
                             </svg></a><a class="ml-3 text-gray-400"><svg fill="currentColor" stroke-linecap="round"
                                 stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">

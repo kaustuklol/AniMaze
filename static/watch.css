@@ -1,0 +1,42 @@
+.player {
+    margin: 50px auto;
+    max-width: 500px;
+}
+
+.plyr--video .plyr__controls {
+    display: flex;
+    align-items: center;
+}
+
+.plyr__volume {
+    min-width: 20px;
+    width: 10px;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    position: relative;
+}
+
+.plyr--video .plyr__controls .plyr__volume input {
+    transform: rotate(-90deg);
+    width: 80px;
+    position: absolute;
+    left: 70%;
+    bottom: 100%;
+    transform-origin: bottom left;
+    transform: translateY(-10px) rotate(-90deg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.plyr--video:hover .plyr__controls .plyr__volume input {
+    opacity: 1;
+    /* Make the volume input visible on hover */
+    pointer-events: auto;
+    /* Enable pointer events when visible */
+}
+
+video {
+    pointer-events: none;
+}

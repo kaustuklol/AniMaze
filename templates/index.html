@@ -31,17 +31,18 @@
         <nav>
             <div class="nav-bar">
                 <i class='bx bx-menu sidebarOpen'></i>
-                <span class="logo navLogo"><a href="#"><img src="/static/assets/logo-pink.png" alt="AniMaze"></a></span>
+                <span class="logo navLogo"><a href="/"><img src="/static/assets/logo-light.png" alt="AniMaze" id="logo"></a></span>
 
                 <div class="menu">
                     <div class="logo-toggle">
-                        <span class="logo"><a href="#">AnimeWeb</a></span>
+                        <span class="logo"><a href="/"><img src="/static/assets/logo-light.png"
+                            alt="AniMaze" id="logo"></a></span>
                         <i class='bx bx-x siderbarClose'></i>
                     </div>
 
                     <ul class="nav-links">
                         <li><a href="/">Home</a></li>
-                        <li><a href="#trending">Trending</a></li>
+                        <li><a href="/#trending">Trending</a></li>
                         <li><a href="/about">About</a></li>
                     </ul>
                 </div>
@@ -105,10 +106,11 @@
 
 
     <!-- Trending Cards -->
-    <div class="trending">
+    <div class="trending" id="trending">
         <h1>Trending This Week</h1>
         <div class="cards">
             {% for anime in top %}
+            <a href='/anime/{{ "" if anime["title"] is none else anime["title"].replace(":", "").replace(" ", "-") }}-{{ anime["id"] }}'>
             <div class="card">
                 <div class="img">
                     <img loading="lazy" src="{{ anime.image }}" alt="{{ anime.title }}">
@@ -142,6 +144,7 @@
                     </div>
                 </div>
             </div>
+            </a>
             {% endfor %}
         </div>
     </div>

@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch: {{ anime.title }}</title>
+    <title>Watching: {{ anime.title }}</title>
 
     <link rel="stylesheet" href="/static/style.css">
     <link rel="stylesheet" href="/static/anime.css">
+    <link rel="stylesheet" href="/static/watch.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <!-- ===== Boxicons CSS ===== -->
@@ -16,9 +17,11 @@
     <script src="https://kit.fontawesome.com/45cb819601.js" crossorigin="anonymous"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.4/plyr.css" />
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
@@ -27,17 +30,18 @@
             <div class="nav-bar">
                 <i class='bx bx-menu sidebarOpen'></i>
                 <span class="logo navLogo"><a href="/"><img src="/static/assets/logo-light.png"
-                            alt="AniMaze"></a></span>
+                            alt="AniMaze" id="logo"></a></span>
 
                 <div class="menu">
                     <div class="logo-toggle">
-                        <span class="logo"><a href="#">AnimeWeb</a></span>
+                        <span class="logo"><a href="/"><img src="/static/assets/logo-light.png"
+                            alt="AniMaze" id="logo"></a></span>
                         <i class='bx bx-x siderbarClose'></i>
                     </div>
 
                     <ul class="nav-links">
                         <li><a href="/">Home</a></li>
-                        <li><a href="#trending">Trending</a></li>
+                        <li><a href="/#trending">Trending</a></li>
                         <li><a href="/about">About</a></li>
                     </ul>
                 </div>
@@ -68,6 +72,16 @@
 
     </header>
 
+    <div class="player">
+        <video controls crossorigin playsinline
+            poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg">
+            <source
+                src="https://cors-mikey.up.railway.app/https://ed.netmagcdn.com:2228/hls-playback/fb992efd85e2e3ef69fa2a00c4ab98e3dc61a0aff5a5932312d9b74d9ad4af0a4bed8dcabd0f8ae61fcf04775107fb05561614d395709a585ab94e0e38bf645db81b1ca5a098e417941d7a2761c405d4beba3589e5067d1eecd8d98f0728c09480b44d15028d194f4a6369053b3014a52d3256fb3b656584d0091a7b1358020ef5ff8f188a51a1a9bf3cda2e2cccc77e/master.m3u8"
+                type="application/x-mpegURL" size="720" lang="en">
+            <track kind="subtitles" label="English" srclang="en"
+                src="https://ccb.megaresources.co/19/73/1973b6fe0bfe4a1c93b5e8fd9098e42f/eng-2.vtt" default>
+        </video>
+    </div>
 
 
 
@@ -110,6 +124,52 @@
 
 
     <script src="/static/script.js"></script>
+    <script src="https://cdn.rawgit.com/video-dev/hls.js/18bb552/dist/hls.min.js"></script>
+    <script src="https://cdn.plyr.io/3.6.4/plyr.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const source = 'https://cors-mikey.up.railway.app/https://ed.netmagcdn.com:2228/hls-playback/fb992efd85e2e3ef69fa2a00c4ab98e3dc61a0aff5a5932312d9b74d9ad4af0a4bed8dcabd0f8ae61fcf04775107fb05561614d395709a585ab94e0e38bf645db81b1ca5a098e417941d7a2761c405d4beba3589e5067d1eecd8d98f0728c09480b44d15028d194f4a6369053b3014a52d3256fb3b656584d0091a7b1358020ef5ff8f188a51a1a9bf3cda2e2cccc77e/master.m3u8';
+            const video = document.querySelector('video');
+            const player = new Plyr(video, { captions: { active: true, update: true, language: 'en' } });
+
+            if (!Hls.isSupported()) {
+                video.src = source;
+            } else {
+                const hls = new Hls();
+                hls.loadSource(source);
+                hls.attachMedia(video);
+                window.hls = hls;
+
+                player.on('languagechange', () => {
+                    setTimeout(() => hls.subtitleTrack = player.currentTrack, 50);
+                });
+            }
+
+            window.player = player;
+
+            video.addEventListener('touchstart', () => {
+                if (video.paused) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+
+            // Add click events to seek forward or backward
+            video.addEventListener('click', (e) => {
+                const clickX = e.pageX - video.getBoundingClientRect().left;
+                const videoWidth = video.clientWidth;
+
+                if (clickX >= videoWidth / 2) {
+                    // Click on the right side, seek forward
+                    video.currentTime += 10;
+                } else {
+                    // Click on the left side, seek backward
+                    video.currentTime -= 10;
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
