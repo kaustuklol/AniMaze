@@ -13,10 +13,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 async def fetch_data():
-    trending_task = getTrending()
-    top_airing_task = topAiring()
-
-    trending, top = await asyncio.gather(trending_task, top_airing_task)
+    trending, top = await asyncio.gather(getTrending(), topAiring())
 
     try:
         trending.sort(key=lambda anime: anime['rating'])
