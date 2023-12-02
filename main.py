@@ -60,20 +60,20 @@ async def fetch_watch(title, aniId, target_episode=None):
 async def watch(request: Request, watch_id: str):
 
     ids = watch_id.split("-")[-1]
-
     aniId = ids.split('$')[0]
     ep = ids.split('$')[1]
-
+    
     parts = watch_id.split('-')
     title = '-'.join(parts[:-1]).strip()
     title = title.replace("-", " ")
 
-    try:
+    # print(await getEp(title, ep))
+    anime = None
+    try:  
         anime, epi, more = await fetch_watch(title, aniId, ep)
-        # ep = await getEp(title, ep)
+        # print(epi)
     except Exception as e:
         print(e)
-
     return templates.TemplateResponse("watch.html", {"request": request, "anime": anime, "more": more, "eps": epi})
 
 if __name__ == "__main__":
