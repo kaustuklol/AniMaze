@@ -100,7 +100,7 @@ nav .nav-bar .logo a {
     text-decoration: none;
 }
 
-nav .nav-bar .logo img{
+nav .nav-bar .logo img {
     width: 160px !important;
 }
 
@@ -323,13 +323,13 @@ header {
 }
 
 /* SLIDER {SWIPER} CSS */
-.slider{
+.slider {
     width: 100%;
     height: 100%;
     position: absolute;
 }
 
-.slider img{
+.slider img {
     height: 100%;
 }
 
@@ -345,11 +345,11 @@ header {
     object-fit: cover;
 }
 
-.slider .swiper-pagination-bullet{
+.slider .swiper-pagination-bullet {
     background: #e0115f;
 }
 
-.slider [class^="swiper-button-"]::after{
+.slider [class^="swiper-button-"]::after {
     color: var(--text-color);
     background: var(--button-color);
     padding: 15px 14px;
@@ -358,7 +358,7 @@ header {
     display: none;
 }
 
-.content-slide{
+.content-slide {
     position: absolute;
     top: 10%;
     left: 0;
@@ -369,49 +369,51 @@ header {
     flex-direction: column;
     text-align: left !important;
     margin: 0 20px;
-    
+
 }
 
-.spotlight{
+.spotlight {
     color: #e0115f;
     font-weight: 200 !important;
     margin: 5px 0;
     font-size: 15px;
 }
 
-.title{
+.title {
     font-size: 38px;
     font-weight: 800;
     height: 70px;
     line-height: 2.5rem;
 }
 
-.icons{
+.icons {
     display: flex;
     align-items: center;
     font-size: 16px;
 }
 
-.icons .status{
+.icons .status {
     margin-left: 15px;
 }
 
-.icons .genres{
+.icons .genres {
     margin-left: 15px;
     background: #e0115f;
     padding: 0px 10px;
     border-radius: 5px;
 }
 
-.synopsis{
+.synopsis {
     font-size: 15px;
     margin-top: 10px;
     width: 70%;
 }
-.acive{
+
+.acive {
     max-width: 50rem;
 }
-.watch{
+
+.watch {
     position: absolute;
     top: 30vh;
     background: #e0115f;
@@ -425,23 +427,28 @@ header {
 
 
 @media (max-width: 790px) {
-    .title{
+    .title {
         font-size: 32px;
     }
-    .synopsis{
+
+    .synopsis {
         display: none;
     }
-    .genres{
+
+    .genres {
         display: none;
     }
-    .icons{
+
+    .icons {
         margin-top: 30px;
     }
-    .watch{
+
+    .watch {
         margin: 0;
     }
 
 }
+
 /* #next{
     position: absolute;
     top: 85%;
@@ -473,18 +480,18 @@ header {
 } */
 
 /* Trending */
-.trending{
+.trending {
     margin: 30px 20px;
     margin-bottom: 500px;
 }
 
-.trending h1{
+.trending h1 {
     font-size: 30px;
     color: var(--heading-color);
     margin: 10px 0;
 }
 
-.cards{
+.cards {
     margin: 25px 50px;
     display: flex;
     align-items: center;
@@ -492,29 +499,29 @@ header {
     flex-wrap: wrap;
 }
 
-.card{
+.card {
     position: relative;
     margin: 20px 0;
 }
 
 
-.card img{
+.card img {
     height: 350px;
     width: auto;
     border-radius: 8px;
 }
 
-.card:hover img{
+.card:hover img {
     -webkit-filter: blur(1.5px);
     cursor: pointer;
 }
 
-.card img:hover + .fa-play{
+.card img:hover+.fa-play {
     display: block;
 }
 
 
-.card .fa-play{
+.card .fa-play {
     color: #fff;
     font-size: 50px;
     position: absolute;
@@ -523,7 +530,7 @@ header {
     display: none;
 }
 
-.card .name{
+.card .name {
     position: absolute;
     bottom: 2px;
     color: #fff;
@@ -533,10 +540,10 @@ header {
     transition: all ease 0.3s;
     /* color: var(--body-color); */
     font-weight: 800;
-    display: none ;
+    display: none;
 }
 
-.card .shadow{
+.card .shadow {
     position: absolute;
     bottom: 0;
     height: 50px;
@@ -545,8 +552,9 @@ header {
     border-radius: 6px;
 }
 
-.card:hover .name{
-    display: block; /* Slide up animation */ 
+.card:hover .name {
+    display: block;
+    /* Slide up animation */
 }
 
 .card .info-box {
@@ -561,23 +569,26 @@ header {
     padding: 12px 10px;
     transition: all ease 0.3s;
     display: none;
-    z-index: 1; /* Set a higher z-index value */
+    z-index: 1;
+    /* Set a higher z-index value */
 }
 
 /* Add the following styles to the .card class */
 .card {
     position: relative;
     margin: 20px 0;
-    z-index: 0; /* Set a lower z-index value */
+    z-index: 0;
+    /* Set a lower z-index value */
 }
 
 .card:hover {
     transform: scale(1.05);
-    z-index: 2; /* Bring the hovered card to the top */
+    z-index: 2;
+    /* Bring the hovered card to the top */
 }
 
 
-.info-title{
+.info-title {
     color: #fff;
     font-size: 16px;
     margin-left: 3px;
@@ -585,22 +596,22 @@ header {
     font-weight: 600;
 }
 
-.rating{
+.rating {
     margin: 6px 0;
     display: flex;
     align-items: center;
 }
 
-.rating .fa-star{
+.rating .fa-star {
     color: #e0115f;
 }
 
-.rating .text-rating{
+.rating .text-rating {
     color: #fff;
     margin-left: 5px;
 }
 
-.rating .line-rating{
+.rating .line-rating {
     width: 100%;
     height: 5px;
     background: #fff;
@@ -608,7 +619,7 @@ header {
     margin-left: 5px;
 }
 
-.line-red{
+.line-red {
     width: 50%;
     height: 5px;
     background: #e0115f;
@@ -616,7 +627,7 @@ header {
     position: relative;
 }
 
-.info-genres{
+.info-genres {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -625,7 +636,7 @@ header {
     margin-bottom: 8px;
 }
 
-.info-genres li{
+.info-genres li {
     border: 1px solid #e0115f;
     padding: 1px 5px;
     margin-right: 4px;
@@ -633,14 +644,14 @@ header {
     margin-bottom: 8px;
 }
 
-.info-desc{
+.info-desc {
     color: #CCC;
     font-size: 13px;
     height: 80px;
     overflow-y: hidden;
 }
 
-.info-btns{
+.info-btns {
     display: flex;
     align-items: center;
     /* justify-content: space-between; */
@@ -648,7 +659,7 @@ header {
     font-weight: 500;
 }
 
-.info-btns a{
+.info-btns a {
     margin-right: 18px;
     margin-top: 18px;
     font-size: 17px;
@@ -657,29 +668,39 @@ header {
     border-radius: 12px;
 }
 
-.info-btns .info-watch{
+.info-btns .info-watch {
     background: #e0115f;
     border-radius: 12px;
 }
 
-.card:hover .info-box{
+.card:hover .info-box {
     display: block;
 }
+
+.cards .card-a {
+    display: none;
+}
+
 @media (max-width: 790px) {
-    .trending h1{
+    .trending h1 {
         font-size: 28px;
     }
 
-    .card:hover .info-box{
+    .card:hover .info-box {
         display: none;
     }
 
-    .card img{
+    .card img {
         height: 208px !important;
     }
 
-    .cards{
+    .cards {
         margin: 18px 10px;
         /* justify-content: initial; */
+    }
+
+    .cards .card-a {
+        display: block;
+
     }
 }
