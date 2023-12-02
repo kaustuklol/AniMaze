@@ -111,10 +111,10 @@
         <h1>Trending This Week</h1>
         <div class="cards">
             {% for anime in top %}
-            <a href='/anime/{{ "" if anime["title"] is none else anime["title"].replace(":", "").replace(" ", "-") }}-{{ anime["id"] }}' id="card-a">
             <div class="card">
+                
                 <div class="img">
-                    <img loading="lazy" src="{{ anime.image }}" alt="{{ anime.title }}">
+                    <a href='/anime/{{ "" if anime["title"] is none else anime["title"].replace(":", "").replace(" ", "-") }}-{{ anime["id"] }}' id="card-a"><img loading="lazy" src="{{ anime.image }}" alt="{{ anime.title }}"></a>
                     <i class="fa fa-play"></i>
                 </div>
                 <div class="name">{{ anime['title'] }}</div>
@@ -145,7 +145,7 @@
                     </div>
                 </div>
             </div>
-            </a>
+        
             {% endfor %}
         </div>
     </div>
