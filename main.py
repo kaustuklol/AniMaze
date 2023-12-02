@@ -66,12 +66,15 @@ async def watch(request: Request, watch_id: str):
 
     parts = watch_id.split('-')
     title = '-'.join(parts[:-1]).strip()
+    title = title.replace("-", " ")
 
-    anime, ep, more = await fetch_watch(title, aniId, ep)
+    try:
+        anime, epi, more = await fetch_watch(title, aniId, ep)
+        # ep = await getEp(title, ep)
+    except Exception as e:
+        print(e)
 
-
-    print(ep)
-    return templates.TemplateResponse("watch.html", {"request": request, "anime": anime, "more": more, "eps": ep})
+    return templates.TemplateResponse("watch.html", {"request": request, "anime": anime, "more": more, "eps": epi})
 
 if __name__ == "__main__":
     import uvicorn
