@@ -677,7 +677,7 @@ header {
     display: block;
 }
 
-.cards .card-a {
+.trending .cards .card-a {
     display: none;
 }
 
@@ -699,7 +699,7 @@ header {
         /* justify-content: initial; */
     }
 
-    .cards .card-a {
+    .trending .cards .card-a {
         display: block;
 
     }
