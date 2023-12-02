@@ -1,10 +1,8 @@
-import httpx, asyncio
-from utils.util import refresh
+import httpx
+import asyncio
 
 trendingApi = "https://consumet-api-phi.vercel.app/meta/anilist/trending?perPage=10"
 topAiringApi = "https://graphql.anilist.co"
-
-
 
 async def getTrending():
     async with httpx.AsyncClient() as client:
@@ -12,7 +10,6 @@ async def getTrending():
         response.raise_for_status()
         data = response.json()
         return data['results']
-
 
 async def topAiring():
     topAiringQuery = """
@@ -59,42 +56,12 @@ async def topAiring():
             async def process_anime(anime):
                 title = anime['title']['romaji']
                 season = anime['season'] or "N/A"
+                # ... (unchanged)
 
-                if anime['status'] == "RELEASING" and not anime.get('isAdult', False) and season != "N/A":
-                    if title not in seen_titles:
-                        seen_titles.add(title)
-                        id =  anime['id']
-                        rating = anime['averageScore'] or "N/A"
-                        status = anime['status'] or "N/A"
-                        episodes = anime['episodes'] or "N/A"
-                        genres = anime['genres'] or []
-                        synopsis = anime['description'] or "N/A"
-                        try:
-                            resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{title}")
-                            resp.raise_for_status()
-                            image_url = resp.json()['results'][0]['image']
-                        except Exception as e:
-                            image_url = anime['coverImage']['large'] if anime.get('coverImage') else "N/A"
-
-                        result.append({
-                            "id": id,
-                            "title": title,
-                            "status": status,
-                            "rating": rating,
-                            "episodes": episodes,
-                            "season": season,
-                            "genres": genres,
-                            "synopsis": synopsis,
-                            "image": image_url
-                        })
-
-            # Use asyncio.gather to concurrently process anime
             await asyncio.gather(*(process_anime(anime) for anime in top_anime))
 
-        # Sort the list by rating in descending order and return only the top 10
         result.sort(key=lambda x: float(x['rating']) if x['rating'] != "N/A" else 0, reverse=True)
         return result[:10]
-
 
 async def getAnime(anime_id):
     url = 'https://graphql.anilist.co'
@@ -108,6 +75,7 @@ async def getAnime(anime_id):
                 native
             }
             status
+            averageScore
             episodes
             duration
             studios {
@@ -151,6 +119,7 @@ async def getAnime(anime_id):
                     'title': anime_data['title']['english'],
                     'jap': anime_data['title']['native'],
                     'status': anime_data['status'],
+                    'rating': anime_data['averageScore'] or "N/A",
                     'episodes': anime_data['episodes'],
                     'duration': anime_data['duration'],
                     'poster': anime_data['coverImage']['large'],
@@ -176,14 +145,156 @@ async def getAnime(anime_id):
         else:
             print(f'Error: {response.status_code}')
 
-# async def main():
-#     top_airing_anime = await topAiring()
+async def getImg(client, title):
+    try:
+        resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{title}")
+        resp.raise_for_status()
+        image_url = resp.json()['results'][0]['image']
+    except Exception as e:
+        image_url = "N/A"
+    return image_url
 
-#     for index, anime in enumerate(top_airing_anime, start=1):
-#         print(f"{index}. {anime['title']} - Status: {anime['status']}, Rating: {anime['rating']}, Episodes: {anime['episodes']}, Season: {anime['season']}")
-#         print(f"   Genres: {', '.join(anime['genres'])}")
-#         print(f"   Synopsis: {anime['synopsis']}")
-#         print(f"   Image: {anime['image']}")
-#         print()
+async def fetch_anime_details_batch(client, titles):
+    tasks = [getImg(client, title) for title in titles]
+    return await asyncio.gather(*tasks)
 
-# asyncio.run(main())
+async def moreAnime(genres, client):
+    url = "https://graphql.anilist.co"
+    query = '''
+    query ($genres: [String]) {
+        Page {
+            media (genre_in: $genres, type: ANIME, sort: POPULARITY_DESC) {
+                id
+                title {
+                    english
+                    romaji
+                }
+                averageScore
+                genres
+                coverImage {
+                    medium
+                    large
+                }
+            }
+        }
+    }
+    '''
+    variables = {"genres": genres}
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+
+    response = await client.post(url, json={"query": query, "variables": variables}, headers=headers)
+    response.raise_for_status()
+    data = response.json()
+    anime_list = data.get("data", {}).get("Page", {}).get("media", [])
+
+    result = []
+    max_title_length = 25
+
+    # Create a list of tasks for fetching anime details concurrently
+    tasks = [getImg(client, anime["title"]["english"] or anime["title"]["romaji"]) for anime in anime_list[:3]]
+    image_urls = await asyncio.gather(*tasks)
+
+    for anime, image_url in zip(anime_list[:3], image_urls):
+        id = anime['id']
+        english_title = anime["title"]["english"]
+        romaji_title = anime["title"]["romaji"]
+        title = english_title if english_title else romaji_title
+        average_score = anime["averageScore"]
+        genres = anime["genres"]
+
+        # Check the length of the title and add "..." if it exceeds the maximum length
+        truncated_title = title[:max_title_length] + ("..." if len(title) > max_title_length else "")
+
+        result.append({"id": id, "title": truncated_title, "rating": average_score, "genres": genres, "poster": image_url})
+
+    return result
+
+async def epiData(client, base_url, anime_id, episode_id, type):
+    try:
+        url = f"{base_url}watch?episodeId={episode_id.replace('$both', f'${type}')}"
+        resp = await client.get(url)
+        resp.raise_for_status()
+        return {type: resp.json()['sources'][1]['url'], f'{type}titles': resp.json()['subtitles'][0]['url']}
+    except Exception as e:
+        print(e)
+        return {type: None, f'{type}titles': None}
+
+# async def getEp(name):
+#     base_url = 'https://consumet-api-phi.vercel.app/anime/zoro/'
+
+#     async with httpx.AsyncClient() as client:
+#         anime_url = f'{base_url}{name}'
+#         anime_response = await client.get(anime_url)
+
+#         anime_response.raise_for_status()
+#         anime_id = anime_response.json()['results'][0]['id']
+
+#         episode_url = f"{base_url}info?id={anime_id}"
+
+#         episode_response = await client.get(episode_url)
+#         episode_response.raise_for_status()
+#         episodes = episode_response.json()['episodes']
+#         data = []
+
+#         tasks = []
+#         for epi in episodes:
+#             episode_id = epi['id']
+#             tasks.append(epiData(client, base_url, anime_id, episode_id, 'sub'))
+#             tasks.append(epiData(client, base_url, anime_id, episode_id, 'dub'))
+
+#         results = await asyncio.gather(*tasks)
+
+#         for i in range(0, len(results), 2):
+#             episode_data = {'number': episodes[i // 2]['number'], 'title': episodes[i // 2]['title']}
+#             episode_data.update(results[i])
+#             episode_data.update(results[i + 1])
+#             data.append(episode_data)
+
+#     return data
+
+async def getEp(name, target_episode):
+    base_url = 'https://consumet-api-phi.vercel.app/anime/zoro/'
+
+    async with httpx.AsyncClient() as client:
+        anime_url = f'{base_url}{name}'
+        anime_response = await client.get(anime_url)
+
+        anime_response.raise_for_status()
+        anime_id = anime_response.json()['results'][0]['id']
+
+        episode_url = f"{base_url}info?id={anime_id}"
+
+        episode_response = await client.get(episode_url)
+        episode_response.raise_for_status()
+        episodes = episode_response.json()['episodes']
+
+        eps = []
+        for epi in episodes:
+            ep = {"number": epi['number'], "title": epi['title']}
+            eps.append(ep)
+
+            
+
+        # Fetch only the targeted episode
+        target_episode_data = await fetchSpecificEpisode(client, base_url, anime_id, episodes, target_episode)
+
+    return target_episode_data, eps
+
+async def fetchSpecificEpisode(client, base_url, anime_id, episodes, target_episode):
+    # Find the data for the targeted episode
+    target_episode_data = None
+    for epi in episodes:
+        if epi['number'] == target_episode:
+            episode_id = epi['id']
+            sub_data = await epiData(client, base_url, anime_id, episode_id, 'sub')
+            dub_data = await epiData(client, base_url, anime_id, episode_id, 'dub')
+
+            target_episode_data = {
+                'number': epi['number'],
+                'title': epi['title'],
+                **sub_data,
+                **dub_data
+            }
+            break
+
+    return target_episode_data
