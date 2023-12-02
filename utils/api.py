@@ -286,7 +286,9 @@ async def getEp(name, target_episode):
         anime_response = await client.get(anime_url)
 
         anime_response.raise_for_status()
-        anime_id = anime_response.json()['results'][0]['id']
+        for i, anime in enumerate(anime_response.json()['results']):
+            if anime['title'].lower() == name.lower(): 
+                anime_id = anime_response.json()['results'][i]['id']
 
         episode_url = f"{base_url}info?id={anime_id}"
 
