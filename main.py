@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from utils.api import getTrending, topAiring, getAnime, getEp, moreAnime, fetch_anime_details_batch
+from utils.api import getTrending, topAiring, getAnime, getEp, moreAnime, fetch_anime_details_batch, searchAnime
 import asyncio, httpx
 
 app = FastAPI()
@@ -69,12 +69,33 @@ async def watch(request: Request, watch_id: str):
 
     # print(await getEp(title, ep))
     anime = None
+    more = None
     try:  
         anime, epi, more = await fetch_watch(title, aniId, ep)
         # print(epi)
     except Exception as e:
         print(e)
     return templates.TemplateResponse("watch.html", {"request": request, "anime": anime, "more": more, "eps": epi})
+
+
+@app.get("/search")
+async def search(request: Request, q: str):
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{q}")
+        resp.raise_for_status()
+
+        results = resp.json()['results']
+
+        animes = []
+        for anime in results:
+            shitt = anime['url'].replace("https://aniwatch.to/", " ").replace("?ref=search", "").split("-")
+            title = (" ").join(shitt[:-1])
+
+            data = await searchAnime(title)
+            animes.append(data)
+
+
+    return templates.TemplateResponse("search.html", {"request": request, "anime": animes})
 
 if __name__ == "__main__":
     import uvicorn

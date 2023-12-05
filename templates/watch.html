@@ -150,12 +150,26 @@
             <div class="list">
                 {% for ep in eps[1] %}
                 <div class="episode">
-                    <div class="name"><a
-                            href='/watch/{{ "" if anime.title is none else anime.title.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ ep.number }}'><b
-                                style="margin-right: 10px;">{{ ep.number }}</b> {{ ep.title }} </a></div>
+                    {% if ep == eps[0]['number'] %}
+                    <div class="name" style="color: #e0115f;">
+                        <a
+                            href='/watch/{{ "" if anime.title is none else anime.title.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ ep.number }}'>
+                            <b style="margin-right: 10px;">{{ ep.number }}</b> {{ ep.title }} <i
+                                class="fas fa-play"></i>
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="name">
+                        <a
+                            href='/watch/{{ "" if anime.title is none else anime.title.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ ep.number }}'>
+                            <b style="margin-right: 10px;">{{ ep.number }}</b> {{ ep.title }}
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
                 <hr>
                 {% endfor %}
+
             </div>
         </div>
     </div>

@@ -73,10 +73,10 @@
         <div class="potrait">
             <div class="image">
                 <img src="{{ anime.poster }}" alt="">
-                <a href="" class="watch"><i class="fa fa-play"></i> Watch Now</a>
+                <a href='/watch/{{ "" if anime.title is none else anime.title.replace(" ", "-") }}-{{ anime["id"] }}$1' class="watch"><i class="fa fa-play"></i> Watch Now</a>
             </div>
             <div class="content">
-                <h2>{{ anime.title|striptags|truncate(37, True, '...')|safe }}</h2>
+                <h2>{{ anime.title|striptags|truncate(32, True, '...')|safe }}</h2>
                 <div class="japanese"><b>Japanese:</b> {{ anime.jap }}</div>
                 <div class="status">
                     <b>Status: </b>{{ anime.status }}

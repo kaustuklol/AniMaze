@@ -6,10 +6,57 @@ topAiringApi = "https://graphql.anilist.co"
 
 async def getTrending():
     async with httpx.AsyncClient() as client:
-        response = await client.get(trendingApi)
+        query = """
+            query {
+            Page(page: 1, perPage: 10) {
+                media(sort: TRENDING_DESC, type: ANIME) {
+                id
+                title {
+                    romaji
+                    english
+                }
+                coverImage {
+                    large
+                }
+                format
+                averageScore
+                startDate {
+                    year
+                    month
+                    day
+                }
+                description
+                genres
+                status
+                bannerImage
+                }
+                
+            }
+            }
+            """
+
+        response = await client.post(topAiringApi, json={"query": query})
         response.raise_for_status()
-        data = response.json()
-        return data['results']
+
+        if response.status_code == 200:
+            data = response.json()
+
+            # Extract relevant information
+            top_trending_anime = []
+            for anime in data["data"]["Page"]["media"]:
+                anime_info = {
+                    "id": anime["id"],
+                    "title": {'romaji': anime["title"]["romaji"], 'english': anime["title"]["english"]},
+                    "cover": anime["bannerImage"],
+                    "type": anime["format"],
+                    "rating": anime["averageScore"],
+                    "releaseDate": f"{anime['startDate']['year']}-{anime['startDate']['month']}-{anime['startDate']['day']}",
+                    "description": anime["description"],
+                    "genres": anime["genres"],
+                    "status": anime["status"],
+                }
+                top_trending_anime.append(anime_info)
+    return top_trending_anime
 
 async def topAiring():
     topAiringQuery = """
@@ -19,6 +66,7 @@ async def topAiring():
           id
           title {
             romaji
+            english
           }
           status
           averageScore
@@ -54,7 +102,7 @@ async def topAiring():
                 return result
 
             async def process_anime(anime):
-                title = anime['title']['romaji']
+                title = anime['title']['english']
                 season = anime['season'] or "N/A"
 
                 if anime['status'] == "RELEASING" and not anime.get('isAdult', False) and season != "N/A":
@@ -91,6 +139,83 @@ async def topAiring():
         # Sort the list by rating in descending order and return only the top 10
         result.sort(key=lambda x: float(x['rating']) if x['rating'] != "N/A" else 0, reverse=True)
         return result[:10]
+
+async def process_anime(anime, result, client):
+    title = anime['title']['romaji']
+    season = anime['season'] or "N/A"
+
+    if anime['status'] == "RELEASING" and not anime.get('isAdult', False) and season != "N/A":
+        id = anime['id']
+        rating = anime['averageScore'] or "N/A"
+        status = anime['status'] or "N/A"
+        episodes = anime['episodes'] or "N/A"
+        genres = anime['genres'] or []
+        synopsis = anime['description'] or "N/A"
+        try:
+            resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{title}")
+            resp.raise_for_status()
+            image_url = resp.json()['results'][0]['image']
+        except Exception as e:
+            image_url = anime['coverImage']['large'] if anime.get('coverImage') else "N/A"
+
+        result.append({
+            "id": id,
+            "title": title,
+            "status": status,
+            "rating": rating,
+            "episodes": episodes,
+            "season": season,
+            "genres": genres,
+            "synopsis": synopsis,
+            "image": image_url
+        })
+
+async def searchAnime(anime_name):
+    searchQuery = """
+    query ($search: String, $type: MediaType) {
+      Page(page: 1, perPage: 10) {
+        media(search: $search, type: $type) {
+          id
+          title {
+            romaji
+          }
+          status
+          averageScore
+          isAdult
+          episodes
+          season
+          genres
+          description
+          coverImage {
+            large
+          }
+        }
+      }
+    }
+    """
+
+    variables = {
+        "search": anime_name,
+        "type": "ANIME"
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.post(topAiringApi, json={"query": searchQuery, "variables": variables})
+        response.raise_for_status()
+
+        result = []
+
+        if response.status_code == 200:
+            data = response.json()
+            anime_list = data.get("data", {}).get("Page", {}).get("media", [])
+
+            if not anime_list:
+                print(f"No data available for anime with name '{anime_name}'.")
+                return result
+
+            for anime in anime_list:
+                await process_anime(anime, result, client)
+
+        return result
 
 async def getAnime(anime_id):
     url = 'https://graphql.anilist.co'
@@ -309,3 +434,7 @@ async def getEp(name, target_episode):
     return target_episode_data, eps
 
 
+# async def main():
+#     print(await searchAnime("bleach thousand year blood war arc"))
+
+# asyncio.run(main())

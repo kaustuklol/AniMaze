@@ -21,7 +21,7 @@
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
-    <title>AniMaze: Watch Animes Online For Free</title>
+    <title>AniMaze: Watch Online Animes For Free</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 
@@ -70,51 +70,15 @@
         </nav>
     </header>
 
-
-    <!-- Slider (Links Left) -->
-    <!-- Slider (Links Left) -->
-    <!-- Slider (Links Left) -->
-    <div class="swiper slider">
-        <div class="swiper-wrapper">
-            {% for anime in trending %}
-            <div class="swiper-slide">
-                <img src="{{ anime.cover }}" loading="lazy">
-                <div class="content-slide">
-                    <div class="spotlight">#{{ loop.index }}</div>
-                    <div class="title">{{ anime.title.english|striptags|truncate(40, True, '...')|safe }}</div>
-                    <div class="icons">
-                        <div class="tv"><i class="fa fa-play"></i>&nbsp;{{ anime.type }}</div>
-                        <div class="status"><i class="fa fa-calendar"></i>&nbsp;{{ anime.status }}</div>
-                        <div class="genres">{{ ', '.join(anime.genres[:2]) }}</div>
-                    </div>
-                    {% if anime.description is not none %}
-                    <div class="synopsis" style="width: 70%;">
-                        {{ anime.description|striptags|truncate(250, True, '...')|safe }}
-                    </div>
-                    {% endif %}
-                    <div class="btn">
-                        <a href='/watch/{{ "" if anime.title.english is none else anime.title.english.replace(" ", "-") }}-{{ anime.id }}$1' class='watch'>Watch Now</a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <div class="swiper-pagination"></div>
-        <div class="swiper-button-prev" id="prev"></div>
-        <div class="swiper-button-next" id="next"></div>
-    </div>
-
-
-
     <!-- Trending Cards -->
     <div class="trending" id="trending">
-        <h1>Trending This Week</h1>
+        <h1>Search Results For: {{ anime.title }}</h1>
         <div class="cards">
-            {% for anime in top %}
+            {% for anime in results %}
+            <a href='/anime/{{ "" if anime["title"] is none else anime["title"].replace(" ", "-") }}-{{ anime["id"] }}' class="card-a">
             <div class="card">
-                
                 <div class="img">
-                    <a href='/anime/{{ "" if anime["title"] is none else anime["title"].replace(" ", "-") }}-{{ anime["id"] }}' id="card-a"><img loading="lazy" src="{{ anime.image }}" alt="{{ anime.title }}"></a>
+                    <img loading="lazy" src="{{ anime.image }}" alt="{{ anime.title }}">
                     <i class="fa fa-play"></i>
                 </div>
                 <div class="name">{{ anime['title'] }}</div>
@@ -140,12 +104,12 @@
                     </div>
                     {% endif %}
                     <div class="info-btns">
-                        <a href='/watch/{{ "" if anime["title"] is none else anime["title"].replace(" ", "-") }}-{{ anime["id"] }}$1' class="info-watch">Watch</a>
-                        <a href='/anime/{{ "" if anime["title"] is none else anime["title"].replace(" ", "-") }}-{{ anime["id"] }}' class="info-btn">Info</a>
+                        <a href='/anime/{{ "" if anime["title"] is none else anime["title"] }}-{{ anime["id"] }}' class="info-btn">Info</a>
+                        <a href='/watch/{{ "" if anime["title"] is none else anime["title"] }}-{{ anime["id"] }}$1' class="info-watch">Watch</a>
                     </div>
                 </div>
             </div>
-        
+            </a>
             {% endfor %}
         </div>
     </div>
