@@ -84,7 +84,7 @@ async def watch(request: Request, watch_id: str):
 async def search(request: Request, query: str):
     async with httpx.AsyncClient() as client:
         # print(query)
-        resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{query.replace("+", " ")}")
+        resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{query.replace('+', ' ')}")
         resp.raise_for_status()
 
         results = resp.json()['results']
