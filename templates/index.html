@@ -8,6 +8,7 @@
     <!-- ===== CSS ===== -->
     <link rel="stylesheet" href="/static/style.css">
     <link rel="stylesheet" href="/static/anime.css">
+    <link rel="stylesheet" href="/static/tailwind.css">
 
     <link rel="shortcut icon" href="/static/assets/logo.png" type="image/x-icon">
     <!-- ===== Boxicons CSS ===== -->
@@ -16,7 +17,7 @@
     <script src="https://kit.fontawesome.com/45cb819601.js" crossorigin="anonymous"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"> -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js"
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
@@ -54,26 +55,25 @@
                         <i class='bx bx-sun sun'></i>
                     </div>
 
-                    <div class="searchBox">
+                    <form method="get" action="/search" class="searchBox">
                         <div class="searchToggle">
                             <i class='bx bx-x cancel'></i>
                             <i class='bx bx-search search'></i>
                         </div>
 
                         <div class="search-field">
-                            <input type="text" placeholder="Search...">
-                            <i class='bx bx-search'></i>
+                            <input type="text" name="query" placeholder="Search...">
+                            <!-- You can keep the search icon or replace it with the button -->
+                            <button type="submit"><i class='bx bx-search'></i></button>
+                            <!-- <i class='bx bx-search'></i> -->
                         </div>
-                    </div>
+                    </form>
                 </div>
+                <!-- <form method="post" actio -->
             </div>
         </nav>
     </header>
 
-
-    <!-- Slider (Links Left) -->
-    <!-- Slider (Links Left) -->
-    <!-- Slider (Links Left) -->
     <div class="swiper slider">
         <div class="swiper-wrapper">
             {% for anime in trending %}
@@ -93,7 +93,7 @@
                     </div>
                     {% endif %}
                     <div class="btn">
-                        <a href='/watch/{{ "" if anime.title.english is none else anime.title.english.replace(" ", "-") }}-{{ anime.id }}$1' class='watch'>Watch Now</a>
+                        <a href='/watch/{{ "" if anime.title.romaji is none else anime.title.romaji.replace(" ", "-") }}-{{ anime.id }}$1' class='watch'>Watch Now</a>
                     </div>
                 </div>
             </div>

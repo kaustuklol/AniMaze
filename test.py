@@ -1,76 +1,87 @@
-# from AnilistPython import Anilist
+import httpx
+topAiringApi = "https://graphql.anilist.co"
+async def process_anime(anime, result, client):
+    title = anime['title']['romaji']
+    season = anime['season'] or "N/A"
 
-# anilist = Anilist()
+    if season != "N/A":
+        id = anime['id']
+        rating = anime['averageScore'] or "N/A"
+        status = anime['status'] or "N/A"
+        episodes = anime['episodes'] or "N/A"
+        genres = anime['genres'] or []
+        synopsis = anime['description'] or "N/A"
+        try:
+            resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{title}")
+            resp.raise_for_status()
+            image_url = resp.json()['results'][0]['image']
+        except Exception as e:
+            image_url = anime['coverImage']['large'] if anime.get('coverImage') else "N/A"
 
-# print(anilist.get_anime("jujutsu kaisen season 2"))
+        result.append({
+            "id": id,
+            "title": title,
+            "status": status,
+            "rating": rating,
+            "episodes": episodes,
+            "season": season,
+            "genres": genres,
+            "synopsis": synopsis,
+            "image": image_url
+        })
 
-import requests
+    return result
 
-def get_anime_info_by_id(anime_id):
-    url = 'https://graphql.anilist.co'
 
-    query = '''
-    query ($animeId: Int) {
-        Media(id: $animeId, type: ANIME) {
-            title {
-                english
-                romaji
-                native
-            }
-            status
-            episodes
-            studios {
-                edges {
-                    isMain
-                    node {
-                        name
-                    }
-                }
-            }
-            averageScore
-            genres
-            description
+async def searchAnime(anime_name):
+    searchQuery = """
+    query ($search: String, $type: MediaType) {
+      Page(page: 1, perPage: 10) {
+        media(search: $search, type: $type) {
+          id
+          title {
+            romaji
+          }
+          status
+          averageScore
+          isAdult
+          episodes
+          season
+          genres
+          description
+          coverImage {
+            large
+          }
         }
+      }
     }
-    '''
+    """
 
     variables = {
-        'animeId': anime_id
+        "search": anime_name
     }
+    async with httpx.AsyncClient() as client:
+        response = await client.post(topAiringApi, json={"query": searchQuery, "variables": variables})
+        response.raise_for_status()
 
-    headers = {
-        'Content-Type': 'application/json',
-    }
+        result = []
 
-    response = requests.post(url, json={'query': query, 'variables': variables}, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            anime_list = data.get("data", {}).get("Page", {}).get("media", [])
 
-    if response.status_code == 200:
-        data = response.json()
-        anime_data = data.get('data', {}).get('Media')
-        if anime_data:
-            return anime_data
-        else:
-            print('Anime not found.')
-    else:
-        print(f'Error: {response.status_code}')
 
-anime_id_to_lookup = 154587
-anime_info = get_anime_info_by_id(anime_id_to_lookup)
+            if not anime_list:
+                print(f"No data available for anime with name '{anime_name}'.")
+                return result
 
-if anime_info:
-    print('Title:', anime_info['title']['english'])
-    print('Status:', anime_info['status'])
-    print('Episodes:', anime_info['episodes'])
-    
-    # Extract the name of the main studio (if available)
-    main_studio_name = None
-    for studio in anime_info['studios']['edges']:
-        if studio['isMain']:
-            main_studio_name = studio['node']['name']
-            break
+            for anime in anime_list:
+                result = await process_anime(anime, result, client)
 
-    print('Main Studio:', main_studio_name if main_studio_name else 'Not available')
-    
-    print('Average Score:', anime_info['averageScore'])
-    print('Genres:', anime_info['genres'])
-    print('Synopsis:', anime_info['description'])
+        return result
+
+async def main():
+    print(await searchAnime("attack on titan"))
+
+import asyncio
+asyncio.run(main())

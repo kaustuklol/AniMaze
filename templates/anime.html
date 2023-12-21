@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="/static/style.css">
     <link rel="stylesheet" href="/static/anime.css">
+    <link rel="stylesheet" href="/static/tailwind.css">
 
 
     <link rel="shortcut icon" href="/static/assets/logo.png" type="image/x-icon">
@@ -50,17 +51,19 @@
                         <i class='bx bx-sun sun'></i>
                     </div>
 
-                    <div class="searchBox">
+                    <form method="get" action="/search" class="searchBox">
                         <div class="searchToggle">
                             <i class='bx bx-x cancel'></i>
                             <i class='bx bx-search search'></i>
                         </div>
 
                         <div class="search-field">
-                            <input type="text" placeholder="Search...">
-                            <i class='bx bx-search'></i>
+                            <input type="text" name="query" placeholder="Search...">
+                            <!-- You can keep the search icon or replace it with the button -->
+                            <button type="submit"><i class='bx bx-search'></i></button>
+                            <!-- <i class='bx bx-search'></i> -->
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </nav>
@@ -73,7 +76,7 @@
         <div class="potrait">
             <div class="image">
                 <img src="{{ anime.poster }}" alt="">
-                <a href='/watch/{{ "" if anime.title is none else anime.title.replace(" ", "-") }}-{{ anime["id"] }}$1' class="watch"><i class="fa fa-play"></i> Watch Now</a>
+                <a href='/watch/{{ "" if q is none else q.replace(" ", "-") }}-{{ anime["id"] }}$1' class="watch"><i class="fa fa-play"></i> Watch Now</a>
             </div>
             <div class="content">
                 <h2>{{ anime.title|striptags|truncate(32, True, '...')|safe }}</h2>
@@ -105,7 +108,7 @@
                 {% if anime.episodes is not none %}
                 {% for i in range(anime.episodes) %}
                 <a
-                    href='/watch/{{ "" if anime.title is none else anime.title.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ loop.index }}'>{{
+                    href='/watch/{{ "" if q is none else q.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ loop.index }}'>{{
                     loop.index }}</a>
                 {% endfor %}
                 {% endif %}

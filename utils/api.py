@@ -1,8 +1,42 @@
 import httpx
 import asyncio
+from loguru import logger
 
 trendingApi = "https://consumet-api-phi.vercel.app/meta/anilist/trending?perPage=10"
 topAiringApi = "https://graphql.anilist.co"
+
+
+# Define the GraphQL query
+GET_ROMAJI_BY_ENGLISH_NAME = '''
+  query GetRomajiByEnglishName($englishName: String!) {
+    anime(englishName: $englishName) {
+      romajiName
+    }
+  }
+'''
+
+async def romaji(english_name):
+    async with httpx.AsyncClient() as client:
+        try:
+            # Make the GraphQL query
+            response = await client.post(
+                topAiringApi,
+                json={'query': GET_ROMAJI_BY_ENGLISH_NAME, 'variables': {'englishName': english_name}},
+            )
+            response.raise_for_status()
+
+            # Extract the Romaji name from the GraphQL response
+            data = response.json()
+            romaji_name = data['data']['anime']['romajiName'] if 'anime' in data['data'] else None
+
+            return romaji_name
+        except httpx.HTTPError as exc:
+            print(f'HTTP error occurred: {exc}')
+            raise
+        except Exception as exc:
+            print(f'Error occurred: {exc}')
+            raise
+
 
 async def getTrending():
     async with httpx.AsyncClient() as client:
@@ -55,7 +89,8 @@ async def getTrending():
                     "genres": anime["genres"],
                     "status": anime["status"],
                 }
-                top_trending_anime.append(anime_info)
+                if anime_info['cover'] is not None:
+                    top_trending_anime.append(anime_info)
     return top_trending_anime
 
 async def topAiring():
@@ -140,16 +175,18 @@ async def topAiring():
         result.sort(key=lambda x: float(x['rating']) if x['rating'] != "N/A" else 0, reverse=True)
         return result[:10]
 
-async def process_anime(anime, result, client):
-    title = anime['title']['romaji']
+async def process_anime(anime, result, client, q):
+    title = anime['title']['english']
+    romaji = anime['title']['romaji']
+    english = anime['title']['english']
     season = anime['season'] or "N/A"
 
-    if anime['status'] == "RELEASING" and not anime.get('isAdult', False) and season != "N/A":
+    if season != "N/A" and title != 'null':
         id = anime['id']
         rating = anime['averageScore'] or "N/A"
         status = anime['status'] or "N/A"
         episodes = anime['episodes'] or "N/A"
-        genres = anime['genres'] or []
+        genres = anime['genres'] or ['N/A', 'N/A', 'N/A']
         synopsis = anime['description'] or "N/A"
         try:
             resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{title}")
@@ -158,25 +195,32 @@ async def process_anime(anime, result, client):
         except Exception as e:
             image_url = anime['coverImage']['large'] if anime.get('coverImage') else "N/A"
 
-        result.append({
+        result = {
             "id": id,
             "title": title,
+            "romaji": romaji,
+            "english": english,
             "status": status,
             "rating": rating,
             "episodes": episodes,
             "season": season,
             "genres": genres,
             "synopsis": synopsis,
-            "image": image_url
-        })
+            "image": image_url,
+            "dank": q,
+            "q": q
+        }
+        # print(genres)
+    return result
 
-async def searchAnime(anime_name):
+async def searchAnime(anime_name, q):
     searchQuery = """
     query ($search: String, $type: MediaType) {
       Page(page: 1, perPage: 10) {
         media(search: $search, type: $type) {
           id
           title {
+            english
             romaji
           }
           status
@@ -195,14 +239,13 @@ async def searchAnime(anime_name):
     """
 
     variables = {
-        "search": anime_name,
-        "type": "ANIME"
+        "search": anime_name
     }
     async with httpx.AsyncClient() as client:
         response = await client.post(topAiringApi, json={"query": searchQuery, "variables": variables})
         response.raise_for_status()
 
-        result = []
+        result = {}
 
         if response.status_code == 200:
             data = response.json()
@@ -213,7 +256,8 @@ async def searchAnime(anime_name):
                 return result
 
             for anime in anime_list:
-                await process_anime(anime, result, client)
+                result = await process_anime(anime, result, client, q)
+                
 
         return result
 
@@ -272,6 +316,7 @@ async def getAnime(anime_id):
                     'id': anime_id,
                     'title': anime_data['title']['english'],
                     'jap': anime_data['title']['native'],
+                    'romaji': anime_data['title']['romaji'],
                     'status': anime_data['status'],
                     'rating': anime_data['averageScore'] or "N/A",
                     'episodes': anime_data['episodes'],
@@ -412,8 +457,11 @@ async def getEp(name, target_episode):
 
         anime_response.raise_for_status()
         for i, anime in enumerate(anime_response.json()['results']):
-            if anime['title'].lower() == name.lower(): 
+            if anime['title'].lower().replace("(tv)", "") == name.lower(): 
                 anime_id = anime_response.json()['results'][i]['id']
+                break
+            else:
+                anime_id = anime_response.json()['results'][0]['id']
 
         episode_url = f"{base_url}info?id={anime_id}"
 
@@ -434,7 +482,3 @@ async def getEp(name, target_episode):
     return target_episode_data, eps
 
 
-# async def main():
-#     print(await searchAnime("bleach thousand year blood war arc"))
-
-# asyncio.run(main())

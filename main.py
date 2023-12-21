@@ -44,13 +44,16 @@ async def test(request: Request):
 @app.get("/anime/{anime_id}")
 async def anime(request: Request, anime_id: str):
     id = anime_id.split("-")[-1]
+    parts = anime_id.split('-')
+    title = '-'.join(parts[:-1]).strip()
+    q = title
     anime = await getAnime(id)
-    return templates.TemplateResponse("anime.html", {"request": request, "anime": anime})
+    return templates.TemplateResponse("anime.html", {"request": request, "anime": anime, "q": q})
 
 
 async def fetch_watch(title, aniId, target_episode=None):
     async with httpx.AsyncClient() as client:
-        anime, ep_data = await asyncio.gather(getAnime(aniId), getEp(title, target_episode))
+        anime, ep_data = await asyncio.gather(searchAnime(title, "h"), getEp(title, target_episode))
         
         more = await moreAnime(anime['genres'], client)
 
@@ -72,30 +75,37 @@ async def watch(request: Request, watch_id: str):
     more = None
     try:  
         anime, epi, more = await fetch_watch(title, aniId, ep)
-        # print(epi)
     except Exception as e:
         print(e)
-    return templates.TemplateResponse("watch.html", {"request": request, "anime": anime, "more": more, "eps": epi})
+    return templates.TemplateResponse("watch.html", {"request": request, "anime": anime, "more": more, "eps": epi, "title": title})
 
 
 @app.get("/search")
-async def search(request: Request, q: str):
+async def search(request: Request, query: str):
     async with httpx.AsyncClient() as client:
-        resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{q}")
+        # print(query)
+        resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{query.replace("+", " ")}")
         resp.raise_for_status()
 
         results = resp.json()['results']
-
+        # print(results)
         animes = []
-        for anime in results:
+        tasks = []
+
+        for i, anime in enumerate(results):
             shitt = anime['url'].replace("https://aniwatch.to/", " ").replace("?ref=search", "").split("-")
             title = (" ").join(shitt[:-1])
+            # print(title)
+            task = searchAnime(title, q=anime['title'])
+            tasks.append(task)
+            if i>8:
+                break
 
-            data = await searchAnime(title)
-            animes.append(data)
-
-
-    return templates.TemplateResponse("search.html", {"request": request, "anime": animes})
+        animes = await asyncio.gather(*tasks)
+        # for i in animes:
+            # print(i['genres'])
+    # return animes
+    return templates.TemplateResponse("search.html", {"request": request, "results": animes, "q": query})
 
 if __name__ == "__main__":
     import uvicorn

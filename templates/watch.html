@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watching: {{ anime.title }}</title>
+    <title>Watching: {{ title }}</title>
 
     <link rel="stylesheet" href="/static/style.css">
     <link rel="stylesheet" href="/static/anime.css">
     <link rel="stylesheet" href="/static/watch.css">
+    <link rel="stylesheet" href="/static/tailwind.css">
 
     <link rel="shortcut icon" href="/static/assets/logo.png" type="image/x-icon">
     <!-- ===== Boxicons CSS ===== -->
@@ -46,17 +47,19 @@
                         <i class='bx bx-sun sun'></i>
                     </div>
 
-                    <div class="searchBox">
+                    <form method="get" action="/search" class="searchBox">
                         <div class="searchToggle">
                             <i class='bx bx-x cancel'></i>
                             <i class='bx bx-search search'></i>
                         </div>
 
                         <div class="search-field">
-                            <input type="text" placeholder="Search...">
-                            <i class='bx bx-search'></i>
+                            <input type="text" name="query" placeholder="Search...">
+                            <!-- You can keep the search icon or replace it with the button -->
+                            <button type="submit"><i class='bx bx-search'></i></button>
+                            <!-- <i class='bx bx-search'></i> -->
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </nav>
@@ -108,7 +111,7 @@
         </div>
 
         <div class="player">
-            <h2>Currently Watching: {{ anime.title }}</h2>
+            <h2>Currently Watching: {{ title }}</h2>
             <video controls crossorigin playsinline poster="{{ anime.banner }}">
                 <source src="" type="application/x-mpegURL" size="720" lang="en">
 
@@ -153,7 +156,7 @@
                     {% if ep == eps[0]['number'] %}
                     <div class="name" style="color: #e0115f;">
                         <a
-                            href='/watch/{{ "" if anime.title is none else anime.title.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ ep.number }}'>
+                            href='/watch/{{ "" if anime.romaji is none else anime.romaji.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ ep.number }}'>
                             <b style="margin-right: 10px;">{{ ep.number }}</b> {{ ep.title }} <i
                                 class="fas fa-play"></i>
                         </a>
@@ -161,7 +164,7 @@
                     {% else %}
                     <div class="name">
                         <a
-                            href='/watch/{{ "" if anime.title is none else anime.title.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ ep.number }}'>
+                            href='/watch/{{ "" if anime.romaji is none else anime.romaji.replace(":", "").replace(" ", "-") }}-{{ anime.id }}${{ ep.number }}'>
                             <b style="margin-right: 10px;">{{ ep.number }}</b> {{ ep.title }}
                         </a>
                     </div>

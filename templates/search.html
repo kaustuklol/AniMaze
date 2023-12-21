@@ -8,6 +8,7 @@
     <!-- ===== CSS ===== -->
     <link rel="stylesheet" href="/static/style.css">
     <link rel="stylesheet" href="/static/anime.css">
+    <link rel="stylesheet" href="/static/tailwind.css">
 
     <link rel="shortcut icon" href="/static/assets/logo.png" type="image/x-icon">
     <!-- ===== Boxicons CSS ===== -->
@@ -16,12 +17,12 @@
     <script src="https://kit.fontawesome.com/45cb819601.js" crossorigin="anonymous"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"> -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js"
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
-    <title>AniMaze: Watch Online Animes For Free</title>
+    <title>Search: {{ q }}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 
@@ -54,17 +55,19 @@
                         <i class='bx bx-sun sun'></i>
                     </div>
 
-                    <div class="searchBox">
+                    <form method="get" action="/search" class="searchBox">
                         <div class="searchToggle">
                             <i class='bx bx-x cancel'></i>
                             <i class='bx bx-search search'></i>
                         </div>
 
                         <div class="search-field">
-                            <input type="text" placeholder="Search...">
-                            <i class='bx bx-search'></i>
+                            <input type="text" name="query" placeholder="Search...">
+                            <!-- You can keep the search icon or replace it with the button -->
+                            <button type="submit"><i class='bx bx-search'></i></button>
+                            <!-- <i class='bx bx-search'></i> -->
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </nav>
@@ -72,13 +75,15 @@
 
     <!-- Trending Cards -->
     <div class="trending" id="trending">
-        <h1>Search Results For: {{ anime.title }}</h1>
+        <h1 style="padding-top: 25px;">Search Results For: {{ q }}</h1>
         <div class="cards">
             {% for anime in results %}
-            <a href='/anime/{{ "" if anime["title"] is none else anime["title"].replace(" ", "-") }}-{{ anime["id"] }}' class="card-a">
             <div class="card">
+                
                 <div class="img">
-                    <img loading="lazy" src="{{ anime.image }}" alt="{{ anime.title }}">
+                    <a href='/anime/{{ "" if "q" not in anime or anime["q"] is none else anime["q"].replace(" ", "-") }}-{{ anime["id"] }}' id="card-a">
+                        <img loading="lazy" src="{{ anime.image }}" alt="{{ anime.title }}">
+                    </a>                    
                     <i class="fa fa-play"></i>
                 </div>
                 <div class="name">{{ anime['title'] }}</div>
@@ -94,22 +99,27 @@
                     </div>
                     {% endif %}
                     <ul class="info-genres">
-                        {% for genre in anime['genres'][:3] %}
-                        <li>{{ genre }}</li>
-                        {% endfor %}
+                        {% if 'genres' in anime and anime['genres'] %}
+                            {% for genre in anime['genres'][:1] %}
+                                <li>{{ genre }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>No genre information available</li>
+                        {% endif %}
                     </ul>
+                    
                     {% if anime['synopsis'] is not none %}
                     <div class="info-desc">
-                        {{ anime['synopsis']|striptags|truncate(100, True, '...')|safe }} :)
+                        {{ anime['synopsis']|striptags|truncate(85, True, '...')|safe }} :)
                     </div>
                     {% endif %}
                     <div class="info-btns">
-                        <a href='/anime/{{ "" if anime["title"] is none else anime["title"] }}-{{ anime["id"] }}' class="info-btn">Info</a>
-                        <a href='/watch/{{ "" if anime["title"] is none else anime["title"] }}-{{ anime["id"] }}$1' class="info-watch">Watch</a>
+                        <a href='/watch/{{ "" if anime["dank"] is none else anime["dank"].replace(" ", "-") }}-{{ anime["id"] }}$1' class="info-watch">Watch</a>
+                        <a href='/anime/{{ "" if anime["dank"] is none else anime["dank"].replace(" ", "-") }}-{{ anime["id"] }}' class="info-btn">Info</a>
                     </div>
                 </div>
             </div>
-            </a>
+        
             {% endfor %}
         </div>
     </div>

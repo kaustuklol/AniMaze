@@ -57,6 +57,11 @@ body.dark {
     --x: #fff;
 }
 
+a{
+    text-decoration: none;
+    color: #fff;
+}
+
 nav {
     position: fixed;
     top: 0;
@@ -261,6 +266,7 @@ body.dark .search-field input {
     right: 15px;
     font-size: 22px;
     cursor: pointer;
+    top: 15px;
 }
 
 body.dark .search-field i {
