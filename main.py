@@ -82,30 +82,30 @@ async def watch(request: Request, watch_id: str):
 
 @app.get("/search")
 async def search(request: Request, query: str):
-    async with httpx.AsyncClient() as client:
-        # print(query)
-        resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{query.replace('+', ' ')}")
-        resp.raise_for_status()
-
-        results = resp.json()['results']
-        # print(results)
-        animes = []
-        tasks = []
-
-        for i, anime in enumerate(results):
-            shitt = anime['url'].replace("https://aniwatch.to/", " ").replace("?ref=search", "").split("-")
-            title = (" ").join(shitt[:-1])
-            # print(title)
-            task = searchAnime(title, q=anime['title'])
-            tasks.append(task)
-            if i>8:
-                break
-
-        animes = await asyncio.gather(*tasks)
-        # for i in animes:
-            # print(i['genres'])
-    # return animes
-    return templates.TemplateResponse("search.html", {"request": request, "results": animes, "q": query})
+    try:
+        async with httpx.AsyncClient() as client:
+            # print(query)
+            resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{query.replace('+', ' ')}")
+            resp.raise_for_status()
+    
+            results = resp.json()['results']
+            # print(results)
+            animes = []
+            tasks = []
+    
+            for i, anime in enumerate(results):
+                shitt = anime['url'].replace("https://aniwatch.to/", " ").replace("?ref=search", "").split("-")
+                title = (" ").join(shitt[:-1])
+                # print(title)
+                task = searchAnime(title, q=anime['title'])
+                tasks.append(task)
+                if i>8:
+                    break
+    
+            animes = await asyncio.gather(*tasks)
+        return templates.TemplateResponse("search.html", {"request": request, "results": animes, "q": query})
+    except:
+        return 'Anime Not Found. Website Under Beta Phase :)'
 
 if __name__ == "__main__":
     import uvicorn
