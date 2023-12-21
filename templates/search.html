@@ -114,8 +114,8 @@
                     </div>
                     {% endif %}
                     <div class="info-btns">
-                        <a href='/watch/{{ "" if anime["dank"] is none else anime["dank"].replace(" ", "-") }}-{{ anime["id"] }}$1' class="info-watch">Watch</a>
-                        <a href='/anime/{{ "" if anime["dank"] is none else anime["dank"].replace(" ", "-") }}-{{ anime["id"] }}' class="info-btn">Info</a>
+                        <a href='/watch/{{ "" if anime["dank"] is none else anime["dank"].replace(" ", "-") }}-{{ anime["id"] | default('') }}$1' class="info-watch">Watch</a>
+<!--                         <a href='/anime/{{ "" if anime["dank"] is none else anime["dank"].replace(" ", "-") }}-{{ anime["id"] }}' class="info-btn">Info</a> -->
                     </div>
                 </div>
             </div>
