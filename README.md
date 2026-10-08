@@ -159,13 +159,31 @@ AniMaze connects multiple services to create the complete experience.
 
 
 ```
-### 👨‍💻 Developer
+---
 
-kaustuk
+## 💡 Why I Built It
 
-Built with ❤️, Python, JavaScript and a lot of debugging.
+I wanted to build something more than a simple frontend project.
 
-⭐ If you like the project, consider giving it a star!
+AniMaze helped me understand how a real web application connects the:
+
+**Frontend → Backend → APIs → Data → Video Player**
+
+It gave me hands-on experience with both frontend and backend development while working on something I genuinely enjoyed building.
+
+---
+
+## 👨‍💻 Developer
+
+**Kaustuk**
+
+[GitHub](https://github.com/kaustuklol)
+
+Built from scratch with ❤️, Python, JavaScript and a lot of debugging.
+
+⭐ If you like the project, consider giving the repository a star!
+
+---
 
 ### 📌 Note
 
