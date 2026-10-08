@@ -158,7 +158,8 @@ AniMaze connects multiple services to create the complete experience.
                            User
 
 
-👨‍💻 Developer
+```
+### 👨‍💻 Developer
 
 kaustuk
 
@@ -166,6 +167,6 @@ Built with ❤️, Python, JavaScript and a lot of debugging.
 
 ⭐ If you like the project, consider giving it a star!
 
-📌 Note
+### 📌 Note
 
 AniMaze is an educational project. It does not host anime content itself and relies on external services for anime information and streaming data.
