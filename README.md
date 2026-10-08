@@ -5,7 +5,7 @@
 **AniMaze** is a full-stack anime website where users can discover anime, search for their favorite shows, view details, and stream episodes with subtitles and SUB/DUB support.
 
 🌐 **Live Website:** https://ani-maze.vercel.app  
-💻 **Source Code:** https://github.com/kaustuk.lol/AniMaze
+💻 **Source Code:** https://github.com/kaustuklol/AniMaze
 
 > ⚠️ The original website was working when it was deployed. Some streaming features may not work now because the project depends on third-party APIs and streaming services that can change over time.
 
@@ -180,7 +180,7 @@ If I continue working on AniMaze, I would like to add:
 
 ## 👨‍💻 Developer
 
-**kaustuk.lol**
+**kaustuklol**
 
 Built with ❤️, Python, JavaScript and a lot of debugging.
 
