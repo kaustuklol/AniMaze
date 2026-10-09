@@ -150,7 +150,7 @@ async def topAiring():
                         genres = anime['genres'] or []
                         synopsis = anime['description'] or "N/A"
                         try:
-                            resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{title}")
+                            resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/hianime/{title}")
                             resp.raise_for_status()
                             image_url = resp.json()['results'][0]['image']
                         except Exception as e:
@@ -189,7 +189,7 @@ async def process_anime(anime, result, client, q):
         genres = anime['genres'] or ['N/A', 'N/A', 'N/A']
         synopsis = anime['description'] or "N/A"
         try:
-            resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{title}")
+            resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/hianime/{title}")
             resp.raise_for_status()
             image_url = resp.json()['results'][0]['image']
         except Exception as e:
@@ -346,7 +346,7 @@ async def getAnime(anime_id):
 
 async def getImg(client, title):
     try:
-        resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/zoro/{title}")
+        resp = await client.get(f"https://consumet-api-phi.vercel.app/anime/hianime/{title}")
         resp.raise_for_status()
         image_url = resp.json()['results'][0]['image']
     except Exception as e:
@@ -449,7 +449,7 @@ async def fetchSpecificEpisode(client, base_url, anime_id, episodes, target_epis
     return target_episode_data
 
 async def getEp(name, target_episode):
-    base_url = 'https://consumet-api-phi.vercel.app/anime/zoro/'
+    base_url = 'https://consumet-api-phi.vercel.app/anime/hianime/'
 
     async with httpx.AsyncClient() as client:
         anime_url = f'{base_url}{name}'
